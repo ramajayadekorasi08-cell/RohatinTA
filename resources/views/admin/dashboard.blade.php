@@ -24,10 +24,7 @@
             <span class="nav-badge">{{ $stats['pending'] }}</span>
         @endif
     </a>
-    <a href="{{ route('admin.ahp.index') }}" class="nav-link">
-        <i class="bi bi-diagram-3"></i>
-        <span>Hitung AHP</span>
-    </a>
+
     
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.categories.index') }}" class="nav-link">

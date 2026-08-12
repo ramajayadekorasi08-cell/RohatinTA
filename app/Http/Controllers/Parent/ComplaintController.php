@@ -39,22 +39,36 @@ class ComplaintController extends Controller
             'student_id' => 'required|exists:students,id',
             'description' => 'required|string|min:10',
         ]);
-        
-        $trackingCode = 'ADU-' . date('Y') . '-' . strtoupper(Str::random(6));
 
-        Complaint::create([
-            'parent_id' => auth()->id(),
-            'category_id' => $request->category_id,
-            'student_id' => $request->student_id,
-            'description' => $request->description,
-            'tracking_code' => $trackingCode,
-            'status' => 'pending',
-            // Default priority fields to allow AHP to work later
-            'priority_level' => 'low', 
-            'priority_score' => 0.00,
+        $complaint = Complaint::create([
+            'parent_id'     => auth()->id(),
+            'category_id'   => $request->category_id,
+            'student_id'    => $request->student_id,
+            'description'   => $request->description,
+            'tracking_code' => Complaint::generateTrackingCode(),
+            'status'        => 'pending',
+            'priority_level'=> 'low',
+            'priority_score'=> 0.00,
+            'submitted_at'  => now(),
         ]);
 
-        return redirect()->route('parent.complaints.index')->with('success', 'Tiket pengaduan berhasil dibuat dengan nomor tiket: ' . $trackingCode);
+        // Send WA notification (fail-safe)
+        $parent = auth()->user();
+        if ($parent->phone) {
+            try {
+                (new \App\Services\WhatsappService())->notifyComplaintCreated(
+                    $parent->phone,
+                    $complaint->tracking_code,
+                    $parent->id,
+                    $complaint->id
+                );
+            } catch (\Throwable $e) {
+                \Illuminate\Support\Facades\Log::error('WA notification failed on complaint create: ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->route('parent.complaints.index')
+            ->with('success', 'Tiket pengaduan berhasil dibuat! No. Tiket Anda: ' . $complaint->tracking_code);
     }
     
     public function rate(Request $request, Complaint $complaint)

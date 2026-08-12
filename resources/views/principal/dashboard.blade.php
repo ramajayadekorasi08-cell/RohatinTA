@@ -16,6 +16,12 @@
         <span>Dashboard</span>
     </a>
     
+    <div class="nav-label">Monitoring</div>
+    <a href="{{ route('principal.ahp.index') }}" class="nav-link">
+        <i class="bi bi-bar-chart-line"></i>
+        <span>Prioritas Pengaduan</span>
+    </a>
+
     <div class="nav-label">Laporan</div>
     <a href="{{ route('principal.reports.complaints') }}" class="nav-link">
         <i class="bi bi-file-earmark-bar-graph"></i>
