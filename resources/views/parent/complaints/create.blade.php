@@ -45,7 +45,7 @@
                         </div>
                     @endif
                     
-                    <form action="{{ route('parent.complaints.store') }}" method="POST">
+                    <form action="{{ route('parent.complaints.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="mb-4">
                             <label class="form-label fw-bold small text-dark">Data Siswa</label>
@@ -83,6 +83,12 @@
                         <div class="mb-4">
                             <label class="form-label fw-bold small text-dark">Deskripsi Laporan / Pengaduan</label>
                             <textarea name="description" class="form-control" rows="5" placeholder="Jelaskan detail pengaduan Anda di sini secara lengkap (min. 10 karakter)..." required minlength="10"></textarea>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-dark">Foto Bukti (Opsional)</label>
+                            <input type="file" name="evidence" class="form-control" accept="image/jpeg,image/png,image/gif">
+                            <div class="form-text small">Unggah foto bukti jika ada (Maksimal 2MB, format jpg/jpeg/png/gif).</div>
                         </div>
 
                         <div class="alert alert-info border-0 bg-info bg-opacity-10 d-flex gap-3 align-items-center mb-4">

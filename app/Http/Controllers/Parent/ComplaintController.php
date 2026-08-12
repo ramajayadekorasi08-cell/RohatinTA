@@ -71,6 +71,7 @@ class ComplaintController extends Controller
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'description' => 'required|string|min:10',
+            'evidence'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $activeStudent = $this->getActiveStudent();
@@ -80,11 +81,17 @@ class ComplaintController extends Controller
                 ->with('error', 'Tidak dapat membuat pengaduan. Data siswa tidak ditemukan.');
         }
 
+        $evidencePath = null;
+        if ($request->hasFile('evidence')) {
+            $evidencePath = $request->file('evidence')->store('complaints/evidence', 'public');
+        }
+
         $complaint = Complaint::create([
             'parent_id'     => auth()->id(),
             'category_id'   => $request->category_id,
             'student_id'    => $activeStudent->id,
             'description'   => $request->description,
+            'evidence_path' => $evidencePath,
             'tracking_code' => Complaint::generateTrackingCode(),
             'status'        => 'pending',
             'priority_level'=> 'low',
