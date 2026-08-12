@@ -29,61 +29,70 @@
 
 @section('content')
     <div class="row mb-4 align-items-center">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <h5 class="fw-bold text-dark mb-1">Selamat Datang, {{ auth()->user()->name }}</h5>
-            <p class="text-muted mb-0">Pantau status laporan dan riwayat pengaduan Anda di sini.</p>
+            <p class="text-muted mb-0">
+                @if(isset($activeStudent) && $activeStudent)
+                    Monitoring laporan untuk: <strong class="text-primary">{{ $activeStudent->name }}</strong>
+                @else
+                    Pantau status laporan dan riwayat pengaduan Anda di sini.
+                @endif
+            </p>
         </div>
-        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <div class="col-md-5 text-md-end mt-3 mt-md-0 d-flex gap-2 justify-content-md-end flex-wrap">
+            @if(isset($students) && $students->count() > 1)
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-badge"></i> {{ isset($activeStudent) && $activeStudent ? $activeStudent->name : 'Pilih Anak' }}
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="min-width:250px;">
+                        <li class="px-3 py-2 text-muted small bg-light border-bottom">Pilih data siswa:</li>
+                        @foreach($students as $student)
+                            <li>
+                                <form action="{{ route('parent.switch_student', $student->id) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item py-2 {{ (isset($activeStudentId) && $activeStudentId == $student->id) ? 'active fw-bold' : '' }}">
+                                        {{ $student->name }} <small class="d-block {{ (isset($activeStudentId) && $activeStudentId == $student->id) ? 'text-white-50' : 'text-muted' }}">Kelas: {{ $student->class }}</small>
+                                    </button>
+                                </form>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <a href="{{ route('parent.complaints.create') }}" class="btn btn-primary-custom">
-                <i class="bi bi-plus-lg me-1"></i> Buat Tiket Pengaduan Baru
+                <i class="bi bi-plus-lg me-1"></i> Buat Tiket Pengaduan
             </a>
         </div>
     </div>
 
     <!-- Dashboard Stats -->
-    <div class="row g-4 mb-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Total Pengaduan</div>
-                    <div class="stat-icon text-primary bg-primary bg-opacity-10">
-                        <i class="bi bi-inbox-fill"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ $stats['total'] }}</div>
+    <!-- Single Panel Statistik Pengaduan Parent -->
+    <div class="data-card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header-custom bg-white border-bottom py-3 px-4 d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3">
+                <i class="bi bi-person-lines-fill fs-5"></i>
             </div>
+            <h6 class="mb-0 fw-bold class-title">STATUS PENGADUAN {{ isset($activeStudent) && $activeStudent ? strtoupper($activeStudent->name) : 'SAYA' }}</h6>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Menunggu Respon (Pending)</div>
-                    <div class="stat-icon text-warning bg-warning bg-opacity-10">
-                        <i class="bi bi-hourglass-top"></i>
-                    </div>
+        <div class="card-body p-0">
+            <div class="row g-0 text-center">
+                <div class="col-6 col-md-3 border-end border-bottom p-4">
+                    <p class="text-muted small fw-bold mb-1 text-uppercase">Total</p>
+                    <h3 class="fw-black text-dark mb-0">{{ $stats['total'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['pending'] }}</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Sedang Diproses</div>
-                    <div class="stat-icon text-info bg-info bg-opacity-10">
-                        <i class="bi bi-tools"></i>
-                    </div>
+                <div class="col-6 col-md-3 border-end border-bottom p-4">
+                    <p class="text-warning small fw-bold mb-1 text-uppercase">Pending</p>
+                    <h3 class="fw-black text-warning mb-0">{{ $stats['pending'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['on_progress'] }}</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Telah Selesai</div>
-                    <div class="stat-icon text-success bg-success bg-opacity-10">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </div>
+                <div class="col-6 col-md-3 border-end border-bottom p-4">
+                    <p class="text-info small fw-bold mb-1 text-uppercase">Diproses</p>
+                    <h3 class="fw-black text-info mb-0">{{ $stats['on_progress'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['resolved'] }}</div>
+                <div class="col-6 col-md-3 border-bottom p-4">
+                    <p class="text-success small fw-bold mb-1 text-uppercase">Selesai</p>
+                    <h3 class="fw-black text-success mb-0">{{ $stats['resolved'] }}</h3>
+                </div>
             </div>
         </div>
     </div>

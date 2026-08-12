@@ -12,38 +12,78 @@ use Illuminate\Support\Str;
 
 class ComplaintController extends Controller
 {
+    /**
+     * Helper: Mendapatkan active student yang aman (milik parent yang login).
+     */
+    private function getActiveStudent()
+    {
+        $user = auth()->user();
+        $students = $user->students;
+
+        if ($students->isEmpty()) {
+            return null;
+        }
+
+        $activeStudentId = session('active_student_id');
+        if (!$activeStudentId || !$students->contains('id', $activeStudentId)) {
+            $activeStudentId = $students->first()->id;
+            session(['active_student_id' => $activeStudentId]);
+        }
+
+        return $students->firstWhere('id', $activeStudentId);
+    }
+
     public function index()
     {
-        $complaints = Complaint::where('parent_id', auth()->user()->id)
+        $activeStudent = $this->getActiveStudent();
+        $students = auth()->user()->students;
+
+        $query = Complaint::where('parent_id', auth()->user()->id)
             ->with(['category', 'student', 'rating'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+            ->orderBy('created_at', 'desc');
+
+        // Filter berdasarkan anak yang aktif
+        if ($activeStudent) {
+            $query->where('student_id', $activeStudent->id);
+        }
+
+        $complaints = $query->paginate(10);
             
-        return view('parent.complaints.index', compact('complaints'));
+        return view('parent.complaints.index', compact('complaints', 'students', 'activeStudent'));
     }
 
     public function create()
     {
-        $categories = Category::where('is_active', true)->get();
-        // Option to pick a student; ideally filtered by parent_id if there's a relation, but typically system just lists them if no relation exists in Student
-        // If Student has parent_id, then ->where('parent_id', auth()->id())
-        $students = Student::all(); 
+        $activeStudent = $this->getActiveStudent();
 
-        return view('parent.complaints.create', compact('categories', 'students'));
+        if (!$activeStudent) {
+            return redirect()->route('parent.dashboard')
+                ->with('error', 'Anda belum memiliki data siswa yang terdaftar. Hubungi Admin.');
+        }
+
+        $categories = Category::where('is_active', true)->get();
+
+        return view('parent.complaints.create', compact('categories', 'activeStudent'));
     }
     
     public function store(Request $request)
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
-            'student_id' => 'required|exists:students,id',
             'description' => 'required|string|min:10',
         ]);
+
+        $activeStudent = $this->getActiveStudent();
+
+        if (!$activeStudent) {
+            return redirect()->route('parent.dashboard')
+                ->with('error', 'Tidak dapat membuat pengaduan. Data siswa tidak ditemukan.');
+        }
 
         $complaint = Complaint::create([
             'parent_id'     => auth()->id(),
             'category_id'   => $request->category_id,
-            'student_id'    => $request->student_id,
+            'student_id'    => $activeStudent->id,
             'description'   => $request->description,
             'tracking_code' => Complaint::generateTrackingCode(),
             'status'        => 'pending',
@@ -52,7 +92,7 @@ class ComplaintController extends Controller
             'submitted_at'  => now(),
         ]);
 
-        // Send WA notification (fail-safe)
+        // Send WA notification (fail-safe) — sertakan nama siswa
         $parent = auth()->user();
         if ($parent->phone) {
             try {
@@ -68,7 +108,7 @@ class ComplaintController extends Controller
         }
 
         return redirect()->route('parent.complaints.index')
-            ->with('success', 'Tiket pengaduan berhasil dibuat! No. Tiket Anda: ' . $complaint->tracking_code);
+            ->with('success', 'Tiket pengaduan untuk siswa ' . $activeStudent->name . ' berhasil dibuat! No. Tiket: ' . $complaint->tracking_code);
     }
     
     public function rate(Request $request, Complaint $complaint)

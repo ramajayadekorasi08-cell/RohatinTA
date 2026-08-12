@@ -21,6 +21,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 // ============ PARENT (ORANG TUA) ROUTES ============
 Route::prefix('parent')->name('parent.')->middleware(['auth', 'role:parent'])->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Parent\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/switch-student/{id}', [\App\Http\Controllers\Parent\DashboardController::class, 'switchStudent'])->name('switch_student');
     Route::get('/complaints/create', [\App\Http\Controllers\Parent\ComplaintController::class, 'create'])->name('complaints.create');
     Route::post('/complaints', [\App\Http\Controllers\Parent\ComplaintController::class, 'store'])->name('complaints.store');
     Route::get('/complaints', [\App\Http\Controllers\Parent\ComplaintController::class, 'index'])->name('complaints.index');
@@ -39,6 +40,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Master data
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'show', 'edit']);
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->except(['create', 'show', 'edit']);
+    Route::resource('students', \App\Http\Controllers\Admin\StudentController::class)->except(['create', 'show', 'edit']);
 });
 
 // ============ PRINCIPAL (KEPALA SEKOLAH) ROUTES ============

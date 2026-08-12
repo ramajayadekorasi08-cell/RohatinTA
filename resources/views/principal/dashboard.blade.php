@@ -35,49 +35,32 @@
 
 @section('content')
     <!-- Dashboard Stats -->
-    <div class="row g-4 mb-4">
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Total Pengaduan (ALL)</div>
-                    <div class="stat-icon text-primary bg-primary bg-opacity-10">
-                        <i class="bi bi-inbox-fill"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ $stats['total'] }}</div>
+    <!-- Single Panel Statistik Pengaduan Kepsek -->
+    <div class="data-card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header-custom bg-white border-bottom py-3 px-4 d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3">
+                <i class="bi bi-display fs-5"></i>
             </div>
+            <h6 class="mb-0 fw-bold class-title">MONITORING PENGADUAN</h6>
         </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Pengaduan Aktif</div>
-                    <div class="stat-icon text-warning bg-warning bg-opacity-10">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
+        <div class="card-body p-0">
+            <div class="row g-0 text-center">
+                <div class="col-6 col-md-3 border-end border-bottom p-4">
+                    <p class="text-muted small fw-bold mb-1 text-uppercase">Total Pengaduan</p>
+                    <h3 class="fw-black text-dark mb-0">{{ $stats['total'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['active'] }}</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Pengaduan Selesai</div>
-                    <div class="stat-icon text-success bg-success bg-opacity-10">
-                        <i class="bi bi-check-circle-fill"></i>
-                    </div>
+                <div class="col-6 col-md-3 border-end border-bottom p-4">
+                    <p class="text-warning small fw-bold mb-1 text-uppercase">Pengaduan Aktif</p>
+                    <h3 class="fw-black text-warning mb-0">{{ $stats['active'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['resolved'] }}</div>
-            </div>
-        </div>
-        <div class="col-sm-6 col-xl-3">
-            <div class="stat-card">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="stat-label">Rata-Rata Evaluasi</div>
-                    <div class="stat-icon text-info bg-info bg-opacity-10">
-                        <i class="bi bi-star-fill"></i>
-                    </div>
+                <div class="col-6 col-md-3 border-end border-bottom p-4">
+                    <p class="text-success small fw-bold mb-1 text-uppercase">Pengaduan Selesai</p>
+                    <h3 class="fw-black text-success mb-0">{{ $stats['resolved'] }}</h3>
                 </div>
-                <div class="stat-value">{{ number_format($stats['avg_rating'], 1) }} / 5</div>
+                <div class="col-6 col-md-3 border-bottom p-4">
+                    <p class="text-info small fw-bold mb-1 text-uppercase">Avg. Evaluasi</p>
+                    <h3 class="fw-black text-info mb-0">{{ number_format($stats['avg_rating'], 1) }} <small class="fs-6 text-muted">/ 5</small></h3>
+                </div>
             </div>
         </div>
     </div>

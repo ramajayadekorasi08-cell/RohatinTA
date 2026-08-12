@@ -27,6 +27,10 @@
 
     
     <div class="nav-label">Master Data</div>
+    <a href="{{ route('admin.students.index') }}" class="nav-link">
+        <i class="bi bi-mortarboard"></i>
+        <span>Data Siswa</span>
+    </a>
     <a href="{{ route('admin.categories.index') }}" class="nav-link">
         <i class="bi bi-folder2"></i>
         <span>Kategori Pengaduan</span>
@@ -38,82 +42,40 @@
 @endsection
 
 @section('content')
-    <div class="row g-3 mb-4">
-        <!-- Total -->
-        <div class="col-xl-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                        <i class="bi bi-hexagon-fill"></i>
-                    </div>
-                </div>
-                <div class="stat-value">{{ $stats['total'] }}</div>
-                <div class="stat-label">Total Pengaduan</div>
+    <!-- Single Panel Statistik Pengaduan -->
+    <div class="data-card mb-4 border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header-custom bg-white border-bottom py-3 px-4 d-flex align-items-center">
+            <div class="bg-primary bg-opacity-10 text-primary rounded p-2 me-3">
+                <i class="bi bi-bar-chart-fill fs-5"></i>
             </div>
+            <h6 class="mb-0 fw-bold class-title">STATISTIK PENGADUAN KESELURUHAN</h6>
         </div>
-        
-        <!-- Pending -->
-        <div class="col-xl-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon bg-warning bg-opacity-10 text-warning">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
+        <div class="card-body p-0">
+            <div class="row g-0 text-center">
+                <div class="col-6 col-md-4 col-xl-2 border-end border-bottom p-4">
+                    <p class="text-muted small fw-bold mb-1 text-uppercase">Total</p>
+                    <h3 class="fw-black text-dark mb-0">{{ $stats['total'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['pending'] }}</div>
-                <div class="stat-label">Menunggu</div>
-            </div>
-        </div>
-
-        <!-- Approved -->
-        <div class="col-xl-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon bg-info bg-opacity-10 text-info">
-                        <i class="bi bi-check-circle"></i>
-                    </div>
+                <div class="col-6 col-md-4 col-xl-2 border-end border-bottom p-4">
+                    <p class="text-warning small fw-bold mb-1 text-uppercase">Pending</p>
+                    <h3 class="fw-black text-warning mb-0">{{ $stats['pending'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['approved'] }}</div>
-                <div class="stat-label">Diterima</div>
-            </div>
-        </div>
-
-        <!-- On Progress -->
-        <div class="col-xl-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon bg-primary bg-opacity-10 text-primary">
-                        <i class="bi bi-arrow-repeat"></i>
-                    </div>
+                <div class="col-6 col-md-4 col-xl-2 border-end border-bottom p-4">
+                    <p class="text-info small fw-bold mb-1 text-uppercase">Diterima</p>
+                    <h3 class="fw-black text-info mb-0">{{ $stats['approved'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['on_progress'] }}</div>
-                <div class="stat-label">Diproses</div>
-            </div>
-        </div>
-
-        <!-- Resolved -->
-        <div class="col-xl-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon bg-success bg-opacity-10 text-success">
-                        <i class="bi bi-check-all"></i>
-                    </div>
+                <div class="col-6 col-md-4 col-xl-2 border-end border-bottom p-4">
+                    <p class="text-primary small fw-bold mb-1 text-uppercase">Diproses</p>
+                    <h3 class="fw-black text-primary mb-0">{{ $stats['on_progress'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['resolved'] }}</div>
-                <div class="stat-label">Selesai</div>
-            </div>
-        </div>
-
-        <!-- Rejected -->
-        <div class="col-xl-2 col-md-4 col-6">
-            <div class="stat-card">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div class="stat-icon bg-danger bg-opacity-10 text-danger">
-                        <i class="bi bi-x-circle"></i>
-                    </div>
+                <div class="col-6 col-md-4 col-xl-2 border-end border-bottom p-4">
+                    <p class="text-success small fw-bold mb-1 text-uppercase">Selesai</p>
+                    <h3 class="fw-black text-success mb-0">{{ $stats['resolved'] }}</h3>
                 </div>
-                <div class="stat-value">{{ $stats['rejected'] }}</div>
-                <div class="stat-label">Ditolak</div>
+                <div class="col-6 col-md-4 col-xl-2 border-bottom p-4">
+                    <p class="text-danger small fw-bold mb-1 text-uppercase">Ditolak</p>
+                    <h3 class="fw-black text-danger mb-0">{{ $stats['rejected'] }}</h3>
+                </div>
             </div>
         </div>
     </div>

@@ -23,6 +23,10 @@
     </a>
 
     <div class="nav-label">Master Data</div>
+    <a href="{{ route('admin.students.index') }}" class="nav-link">
+        <i class="bi bi-mortarboard"></i>
+        <span>Data Siswa</span>
+    </a>
     <a href="{{ route('admin.categories.index') }}" class="nav-link">
         <i class="bi bi-folder2"></i>
         <span>Kategori Pengaduan</span>

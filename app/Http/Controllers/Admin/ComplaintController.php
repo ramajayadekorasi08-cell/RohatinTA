@@ -59,7 +59,8 @@ class ComplaintController extends Controller
 
             // 4. Notifikasi WA (fail-safe)
             if ($phone) {
-                $waService->notifyComplaintApproved($phone, $complaint->tracking_code, $parent->id, $complaint->id);
+                $studentName = $complaint->student?->name;
+                $waService->notifyComplaintApproved($phone, $complaint->tracking_code, $parent->id, $complaint->id, $studentName);
             }
 
             return back()->with('success', "Pengaduan {$complaint->tracking_code} telah diterima. Nilai AHP dihitung otomatis.");
@@ -79,7 +80,8 @@ class ComplaintController extends Controller
         ]);
 
         if ($phone) {
-            $waService->notifyComplaintRejected($phone, $complaint->tracking_code, $request->rejection_reason, $parent->id, $complaint->id);
+            $studentName = $complaint->student?->name;
+            $waService->notifyComplaintRejected($phone, $complaint->tracking_code, $request->rejection_reason, $parent->id, $complaint->id, $studentName);
         }
 
         return back()->with('success', "Pengaduan {$complaint->tracking_code} telah ditolak.");
@@ -123,7 +125,8 @@ class ComplaintController extends Controller
         $parent = $complaint->parentUser;
         if ($parent?->phone) {
             $waLabel = $complaint->fresh()->statusLabel;
-            (new WhatsappService())->notifyStatusChanged($parent->phone, $complaint->tracking_code, $waLabel, $parent->id, $complaint->id);
+            $studentName = $complaint->student?->name;
+            (new WhatsappService())->notifyStatusChanged($parent->phone, $complaint->tracking_code, $waLabel, $parent->id, $complaint->id, $studentName);
         }
 
         return back()->with('success', "Status pengaduan berhasil diubah ke: {$complaint->fresh()->statusLabel}");

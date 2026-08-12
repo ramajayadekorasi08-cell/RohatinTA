@@ -49,13 +49,18 @@
                         @csrf
                         <div class="mb-4">
                             <label class="form-label fw-bold small text-dark">Data Siswa</label>
-                            <select name="student_id" class="form-select text-secondary" required>
-                                <option value="">-- Pilih Siswa (Anak) --</option>
-                                @foreach($students as $student)
-                                    <option value="{{ $student->id }}">{{ $student->name }} (NISN: {{ $student->nisn }}) - Kelas {{ $student->grade }}</option>
-                                @endforeach
-                            </select>
-                            <div class="form-text small">Pilih siswa yang terkait dengan laporan ini.</div>
+                            <div class="card border rounded-3 p-3 bg-light">
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width:42px;height:42px;">
+                                        <i class="bi bi-person-fill fs-5"></i>
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold">{{ $activeStudent->name }}</div>
+                                        <div class="small text-muted">NISN: {{ $activeStudent->nis }} — Kelas {{ $activeStudent->class }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-text small">Pengaduan ini akan ditujukan untuk siswa di atas. Untuk mengganti, ubah pilihan anak di <a href="{{ route('parent.dashboard') }}">Dashboard</a>.</div>
                         </div>
 
                         <div class="mb-4">

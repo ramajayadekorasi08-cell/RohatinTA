@@ -81,27 +81,30 @@ class WhatsappService
     /**
      * Send notification for approved complaint
      */
-    public function notifyComplaintApproved(string $phone, string $trackingCode, ?int $parentId = null, ?int $complaintId = null): bool
+    public function notifyComplaintApproved(string $phone, string $trackingCode, ?int $parentId = null, ?int $complaintId = null, ?string $studentName = null): bool
     {
-        $message = "Halo Bapak/Ibu,\n\nPengaduan Anda dengan nomor tiket *{$trackingCode}* telah *DITERIMA* oleh Admin dan masuk ke sistem perhitungan prioritas kami.\n\nTerima kasih atas laporan Anda.";
+        $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
+        $message = "Halo Bapak/Ibu,\n\nPengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah *DITERIMA* oleh Admin dan masuk ke sistem perhitungan prioritas kami.\n\nTerima kasih atas laporan Anda.";
         return $this->send($phone, $message);
     }
 
     /**
      * Send notification for rejected complaint
      */
-    public function notifyComplaintRejected(string $phone, string $trackingCode, string $reason, ?int $parentId = null, ?int $complaintId = null): bool
+    public function notifyComplaintRejected(string $phone, string $trackingCode, string $reason, ?int $parentId = null, ?int $complaintId = null, ?string $studentName = null): bool
     {
-        $message = "Halo Bapak/Ibu,\n\nMohon maaf, pengaduan Anda dengan nomor tiket *{$trackingCode}* telah *DITOLAK* oleh Admin.\n\nAlasan: {$reason}\n\nTerima kasih.";
+        $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
+        $message = "Halo Bapak/Ibu,\n\nMohon maaf, pengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah *DITOLAK* oleh Admin.\n\nAlasan: {$reason}\n\nTerima kasih.";
         return $this->send($phone, $message);
     }
 
     /**
      * Send notification for status change
      */
-    public function notifyStatusChanged(string $phone, string $trackingCode, string $statusLabel, ?int $parentId = null, ?int $complaintId = null): bool
+    public function notifyStatusChanged(string $phone, string $trackingCode, string $statusLabel, ?int $parentId = null, ?int $complaintId = null, ?string $studentName = null): bool
     {
-        $message = "Halo Bapak/Ibu,\n\nStatus pengaduan Anda dengan nomor tiket *{$trackingCode}* telah diperbarui menjadi:\n\n*{$statusLabel}*\n\nSilakan cek aplikasi untuk detail selengkapnya.";
+        $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
+        $message = "Halo Bapak/Ibu,\n\nStatus pengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah diperbarui menjadi:\n\n*{$statusLabel}*\n\nSilakan cek aplikasi untuk detail selengkapnya.";
         return $this->send($phone, $message);
     }
 

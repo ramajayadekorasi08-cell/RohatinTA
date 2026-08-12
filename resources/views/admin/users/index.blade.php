@@ -24,6 +24,10 @@
 
     
     <div class="nav-label">Master Data</div>
+    <a href="{{ route('admin.students.index') }}" class="nav-link">
+        <i class="bi bi-mortarboard"></i>
+        <span>Data Siswa</span>
+    </a>
     <a href="{{ route('admin.categories.index') }}" class="nav-link">
         <i class="bi bi-folder2"></i>
         <span>Kategori Pengaduan</span>
@@ -66,6 +70,7 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th class="text-center">Jumlah Anak</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -82,6 +87,13 @@
                                         <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">Kepala Sekolah</span>
                                     @else
                                         <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Wali Murid</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($user->role === 'parent')
+                                        <span class="badge bg-secondary bg-opacity-25 text-dark rounded-pill">{{ $user->students->count() ?? 0 }} Anak</span>
+                                    @else
+                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
