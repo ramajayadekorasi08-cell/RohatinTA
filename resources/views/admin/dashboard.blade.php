@@ -109,7 +109,6 @@
     <div class="data-card mb-4">
         <div class="card-header-custom">
             <h6><i class="bi bi-clock-history me-2"></i>Pengaduan Terbaru</h6>
-            <button class="btn btn-sm btn-primary-custom">Lihat Semua</button>
         </div>
         <div class="card-body-custom p-0">
             <div class="table-responsive">

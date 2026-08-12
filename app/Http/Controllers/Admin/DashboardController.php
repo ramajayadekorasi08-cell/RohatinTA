@@ -23,6 +23,7 @@ class DashboardController extends Controller
         ];
 
         $recentComplaints = Complaint::with(['parentUser', 'category', 'student'])
+            ->where('status', '!=', Complaint::STATUS_RESOLVED)
             ->orderBy('created_at', 'desc')
             ->take(10)
             ->get();
