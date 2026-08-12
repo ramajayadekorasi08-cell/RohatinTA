@@ -65,19 +65,12 @@
 
                         <div class="mb-4">
                             <label class="form-label fw-bold small text-dark">Kategori Pengaduan</label>
-                            <div class="row g-3">
+                            <select name="category_id" class="form-select" required>
+                                <option value="" disabled selected>-- Pilih Kategori Pengaduan --</option>
                                 @foreach($categories as $category)
-                                    <div class="col-md-6">
-                                        <label class="position-relative w-100 h-100" style="cursor: pointer;">
-                                            <input type="radio" name="category_id" value="{{ $category->id }}" class="btn-check" required>
-                                            <div class="card h-100 border p-3 rounded-3 category-card transition" style="transition: all 0.2s">
-                                                <div class="fw-bold mb-1">{{ $category->name }}</div>
-                                                <div class="small text-muted" style="font-size: 0.75rem;">{{ Str::limit($category->description, 60) }}</div>
-                                            </div>
-                                        </label>
-                                    </div>
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
-                            </div>
+                            </select>
                         </div>
 
                         <div class="mb-4">
@@ -109,13 +102,4 @@
     </div>
 @endsection
 
-@push('styles')
-<style>
-    .btn-check:checked + .category-card {
-        border-color: var(--primary) !important;
-        background-color: rgba(30,58,95,0.05);
-        box-shadow: 0 0 0 1px var(--primary);
-    }
-    .category-card:hover { border-color: #cbd5e1; background: #f8fafc; }
-</style>
-@endpush
+
