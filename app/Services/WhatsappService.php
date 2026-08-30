@@ -27,14 +27,28 @@ class WhatsappService
      *
      * @param string $phone The phone number in international format (e.g., 6281234567890)
      * @param string $message The message text to send
+     * @param int|null $userId ID of user receiving (optional)
+     * @param int|null $complaintId ID of complaint related (optional)
      * @return bool
      */
-    public function send(string $phone, string $message): bool
+    public function send(string $phone, string $message, ?int $userId = null, ?int $complaintId = null): bool
     {
         if (empty($this->deviceId) || empty($phone)) {
             Log::warning('WhatsApp Service: Device ID or phone number is missing', [
                 'phone' => $phone
             ]);
+            
+            \App\Models\NotificationLog::create([
+                'user_id' => $userId,
+                'complaint_id' => $complaintId,
+                'phone' => $phone,
+                'type' => 'whatsapp',
+                'message' => $message,
+                'status' => \App\Models\NotificationLog::STATUS_FAILED,
+                'provider' => 'gowa',
+                'error_message' => 'Device ID or phone number is missing'
+            ]);
+
             return false;
         }
 
@@ -57,6 +71,19 @@ class WhatsappService
                 Log::info('WhatsApp message sent successfully', [
                     'phone' => $phoneJid,
                 ]);
+
+                \App\Models\NotificationLog::create([
+                    'user_id' => $userId,
+                    'complaint_id' => $complaintId,
+                    'phone' => $phone,
+                    'type' => 'whatsapp',
+                    'message' => $message,
+                    'status' => \App\Models\NotificationLog::STATUS_SENT,
+                    'provider' => 'gowa',
+                    'response' => $response->body(),
+                    'sent_at' => now(),
+                ]);
+
                 return true;
             }
 
@@ -67,6 +94,17 @@ class WhatsappService
                 'response_body' => $response->body(),
             ]);
 
+            \App\Models\NotificationLog::create([
+                'user_id' => $userId,
+                'complaint_id' => $complaintId,
+                'phone' => $phone,
+                'type' => 'whatsapp',
+                'message' => $message,
+                'status' => \App\Models\NotificationLog::STATUS_FAILED,
+                'provider' => 'gowa',
+                'error_message' => 'API Error: ' . $response->body()
+            ]);
+
             return false;
             
         } catch (\Exception $e) {
@@ -74,6 +112,18 @@ class WhatsappService
                 'phone' => $phone,
                 'error' => $e->getMessage()
             ]);
+
+            \App\Models\NotificationLog::create([
+                'user_id' => $userId,
+                'complaint_id' => $complaintId,
+                'phone' => $phone,
+                'type' => 'whatsapp',
+                'message' => $message,
+                'status' => \App\Models\NotificationLog::STATUS_FAILED,
+                'provider' => 'gowa',
+                'error_message' => 'Exception: ' . $e->getMessage()
+            ]);
+
             return false;
         }
     }
@@ -85,7 +135,7 @@ class WhatsappService
     {
         $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
         $message = "Halo Bapak/Ibu,\n\nPengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah *DITERIMA* oleh Admin dan masuk ke sistem perhitungan prioritas kami.\n\nTerima kasih atas laporan Anda.";
-        return $this->send($phone, $message);
+        return $this->send($phone, $message, $parentId, $complaintId);
     }
 
     /**
@@ -95,7 +145,7 @@ class WhatsappService
     {
         $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
         $message = "Halo Bapak/Ibu,\n\nMohon maaf, pengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah *DITOLAK* oleh Admin.\n\nAlasan: {$reason}\n\nTerima kasih.";
-        return $this->send($phone, $message);
+        return $this->send($phone, $message, $parentId, $complaintId);
     }
 
     /**
@@ -105,7 +155,7 @@ class WhatsappService
     {
         $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
         $message = "Halo Bapak/Ibu,\n\nStatus pengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah diperbarui menjadi:\n\n*{$statusLabel}*\n\nSilakan cek aplikasi untuk detail selengkapnya.";
-        return $this->send($phone, $message);
+        return $this->send($phone, $message, $parentId, $complaintId);
     }
 
     /**
@@ -115,7 +165,7 @@ class WhatsappService
     {
         $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
         $message = "Halo Bapak/Ibu,\n\nPengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah *SELESAI* kami proses dan tindak lanjuti.\n\nCatatan Penyelesaian:\n{$resolutionNote}\n\nTerima kasih atas laporan Anda. Silakan cek aplikasi untuk detail selengkapnya.";
-        return $this->send($phone, $message);
+        return $this->send($phone, $message, $parentId, $complaintId);
     }
 
     /**

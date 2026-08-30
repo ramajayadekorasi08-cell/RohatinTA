@@ -17,8 +17,9 @@ class ComplaintController extends Controller
         $complaints = Complaint::with(['parentUser', 'student', 'category', 'ahpResults'])
             ->latest()
             ->paginate(15);
+        $criteria = \App\Models\AhpCriterion::all();
 
-        return view('admin.complaints.index', compact('complaints'));
+        return view('admin.complaints.index', compact('complaints', 'criteria'));
     }
 
     /**
@@ -43,6 +44,25 @@ class ComplaintController extends Controller
         $phone      = $parent?->phone;
 
         if ($request->action === 'approve') {
+            // Validate criteria scores form input
+            $request->validate([
+                'criteria' => 'required|array',
+                'criteria.*' => 'required|numeric|min:1|max:5',
+            ]);
+
+            // Save AhpResults from Admin Input
+            foreach($request->criteria as $criterionId => $score) {
+                \App\Models\AhpResult::updateOrCreate(
+                    [
+                        'complaint_id' => $complaint->id,
+                        'ahp_criterion_id' => $criterionId,
+                    ],
+                    [
+                        'score' => $score,
+                    ]
+                );
+            }
+
             // 1. Ubah status
             $complaint->update(['status' => Complaint::STATUS_APPROVED]);
 

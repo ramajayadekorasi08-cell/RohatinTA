@@ -112,6 +112,15 @@
                                                 </div>
                                             </div>
 
+                                            @if($complaint->evidence_path)
+                                            <div class="mb-3">
+                                                <label class="form-label small fw-bold text-muted mb-1">Bukti Foto:</label>
+                                                <div class="text-center">
+                                                    <img src="{{ asset('storage/' . $complaint->evidence_path) }}" alt="Bukti Foto" class="img-fluid rounded-3 border" style="max-height: 300px; object-fit: contain;">
+                                                </div>
+                                            </div>
+                                            @endif
+
                                             @if($complaint->responses)
                                             <div class="mb-3">
                                                 <label class="form-label small fw-bold text-muted mb-1">Tanggapan/Catatan Sekolah:</label>

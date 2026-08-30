@@ -23,6 +23,16 @@
     </a>
 
     
+        <div class="nav-label">Pengaturan AHP</div>
+    <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
+        <i class="bi bi-diagram-3"></i>
+        <span>Hasil AHP & Bobot</span>
+    </a>
+    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+        <i class="bi bi-table"></i>
+        <span>Perbandingan Kriteria</span>
+    </a>
+    
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.students.index') }}" class="nav-link">
         <i class="bi bi-mortarboard"></i>

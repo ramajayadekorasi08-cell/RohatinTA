@@ -42,6 +42,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'show', 'edit']);
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class)->except(['create', 'show', 'edit']);
     Route::resource('students', \App\Http\Controllers\Admin\StudentController::class)->except(['create', 'show', 'edit']);
+
+    // AHP Comparison
+    Route::get('/ahp', [\App\Http\Controllers\Admin\AhpController::class, 'index'])->name('ahp.index');
+    Route::get('/ahp/comparison', [\App\Http\Controllers\Admin\AhpController::class, 'comparison'])->name('ahp.comparison');
+    Route::post('/ahp/comparison', [\App\Http\Controllers\Admin\AhpController::class, 'storeComparison'])->name('ahp.storeComparison');
 });
 
 // ============ PRINCIPAL (KEPALA SEKOLAH) ROUTES ============
@@ -51,3 +56,12 @@ Route::prefix('principal')->name('principal.')->middleware(['auth', 'role:princi
     Route::get('/reports/complaints', [\App\Http\Controllers\Principal\ReportController::class, 'complaints'])->name('reports.complaints');
     Route::get('/reports/evaluation', [\App\Http\Controllers\Principal\ReportController::class, 'evaluation'])->name('reports.evaluation');
 });
+
+Route::get('/storage/{path}', function ($path) {
+    $fullPath = storage_path('app/public/' . $path);
+    if (!file_exists($fullPath)) {
+        abort(404);
+    }
+    return response()->file($fullPath);
+})->where('path', '.*');
+

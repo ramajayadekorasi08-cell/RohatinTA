@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Hitung AHP')
-@section('page-title', 'Hitung AHP')
+@section('title', 'Hasil AHP & Bobot')
+@section('page-title', 'Hasil AHP & Bobot')
 
 @section('breadcrumb')
     <a href="#">Admin</a>
     <i class="bi bi-chevron-right" style="font-size: 0.6rem"></i>
-    <span>Hitung AHP</span>
+    <span>Hasil AHP & Bobot</span>
 @endsection
 
 @section('sidebar')
@@ -21,9 +21,16 @@
         <i class="bi bi-inbox"></i>
         <span>Semua Pengaduan</span>
     </a>
-    <a href="{{ route('admin.ahp.index') }}" class="nav-link active">
+    
+    
+        <div class="nav-label">Pengaturan AHP</div>
+    <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
         <i class="bi bi-diagram-3"></i>
-        <span>Hitung AHP</span>
+        <span>Hasil AHP & Bobot</span>
+    </a>
+    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+        <i class="bi bi-table"></i>
+        <span>Perbandingan Kriteria</span>
     </a>
     
     <div class="nav-label">Master Data</div>
@@ -65,13 +72,7 @@
         <div class="col-lg-8">
             <div class="data-card h-100">
                 <div class="card-header-custom d-flex justify-content-between align-items-center">
-                    <h6><i class="bi bi-sort-numeric-down me-2"></i>Hasil Ranking Pengaduan</h6>
-                    <form action="{{ route('admin.ahp.calculate') }}" method="POST">
-                        @csrf
-                        <button type="submit" class="btn btn-sm btn-primary-custom">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Proses Hitung AHP
-                        </button>
-                    </form>
+                    <h6><i class="bi bi-sort-numeric-down me-2"></i>Hasil Pengaduan</h6>
                 </div>
                 <div class="card-body-custom p-0">
                     @if(session('success'))
@@ -83,8 +84,9 @@
                                 <tr>
                                     <th class="ps-4">Rank</th>
                                     <th>No Tiket</th>
-                                    <th>Nilai Total AHP</th>
-                                    <th>Status Prioritas</th>
+                                    <th class="text-center">Nilai AHP</th>
+                                    <th class="text-center">Status Prioritas</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,18 +107,23 @@
                                             <span style="font-weight: 600; color: var(--primary)">{{ $complaint->tracking_code }}</span>
                                             <div class="small text-muted">{{ $complaint->category->name ?? '-' }}</div>
                                         </td>
-                                        <td>
-                                            <div class="fw-bold text-dark fs-6">{{ number_format($complaint->priority_score * 100, 2) }}</div>
+                                        <td class="text-center">
+                                            <div class="fw-bold text-dark fs-6">{{ number_format((float)$complaint->priority_score, 4) }}</div>
                                         </td>
-                                        <td>
-                                            <span class="badge-status badge-priority-{{ $complaint->priority_level }}">
-                                                {{ ucfirst($complaint->priority_level) }}
+                                        <td class="text-center">
+                                            <span class="badge-status badge-priority-{{ $complaint->priority_level ?? 'low' }}">
+                                                {{ strtoupper($complaint->priority_level ?? 'LOW') }}
                                             </span>
+                                        </td>
+                                        <td class="text-center">
+                                            <a href="{{ route('admin.complaints.index') }}" class="btn btn-sm btn-outline-info" title="Lihat di Semua Pengaduan">
+                                                <i class="bi bi-eye"></i> Detail
+                                            </a>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center py-5 text-muted">Belum ada pengaduan yang dinilai AHP</td>
+                                        <td colspan="5" class="text-center py-5 text-muted">Belum ada pengaduan yang dinilai AHP</td>
                                     </tr>
                                 @endforelse
                             </tbody>

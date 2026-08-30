@@ -23,6 +23,16 @@
     </a>
 
     
+        <div class="nav-label">Pengaturan AHP</div>
+    <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
+        <i class="bi bi-diagram-3"></i>
+        <span>Hasil AHP & Bobot</span>
+    </a>
+    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+        <i class="bi bi-table"></i>
+        <span>Perbandingan Kriteria</span>
+    </a>
+    
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.students.index') }}" class="nav-link">
         <i class="bi bi-mortarboard"></i>
@@ -70,7 +80,6 @@
                             <th>Username</th>
                             <th>Email</th>
                             <th>Role</th>
-                            <th class="text-center">Jumlah Anak</th>
                             <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -87,13 +96,6 @@
                                         <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">Kepala Sekolah</span>
                                     @else
                                         <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">Wali Murid</span>
-                                    @endif
-                                </td>
-                                <td class="text-center">
-                                    @if($user->role === 'parent')
-                                        <span class="badge bg-secondary bg-opacity-25 text-dark rounded-pill">{{ $user->students->count() ?? 0 }} Anak</span>
-                                    @else
-                                        <span class="text-muted">-</span>
                                     @endif
                                 </td>
                                 <td class="text-center">

@@ -22,6 +22,16 @@
         <span>Semua Pengaduan</span>
     </a>
 
+        <div class="nav-label">Pengaturan AHP</div>
+    <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
+        <i class="bi bi-diagram-3"></i>
+        <span>Hasil AHP & Bobot</span>
+    </a>
+    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+        <i class="bi bi-table"></i>
+        <span>Perbandingan Kriteria</span>
+    </a>
+    
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.students.index') }}" class="nav-link">
         <i class="bi bi-mortarboard"></i>
@@ -97,6 +107,10 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
+                                    {{-- Tombol Detail --}}
+                                    <button type="button" class="btn btn-sm btn-outline-info me-1" data-bs-toggle="modal" data-bs-target="#detailModal-{{ $complaint->id }}" title="Lihat Detail">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
                                     @if($complaint->status === 'pending')
                                         {{-- Tombol Verifikasi: Terima / Tolak --}}
                                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#approveModal-{{ $complaint->id }}" title="Terima Pengaduan">
@@ -115,12 +129,9 @@
                                         </button>
                                     @elseif($complaint->status === 'resolved')
                                         <span class="badge bg-success bg-opacity-10 text-success mb-1 d-inline-block">Selesai</span>
-                                        <form action="{{ route('admin.complaints.resendWa', $complaint->id) }}" method="POST" class="d-inline-block ms-1">
-                                            @csrf
-                                            <button type="submit" class="btn btn-sm btn-success" title="Kirim Notifikasi WA">
-                                                <i class="bi bi-whatsapp"></i> Notif WA
-                                            </button>
-                                        </form>
+                                        <button type="button" class="btn btn-sm btn-success ms-1" data-bs-toggle="modal" data-bs-target="#waModal-{{ $complaint->id }}" title="Kirim Notifikasi WA">
+                                            <i class="bi bi-whatsapp"></i> Notif WA
+                                        </button>
                                     @elseif($complaint->status === 'rejected')
                                         <span class="badge bg-danger bg-opacity-10 text-danger">Ditolak</span>
                                     @else
@@ -128,6 +139,124 @@
                                     @endif
                                 </td>
                             </tr>
+
+                            {{-- Modal: Detail Pengaduan --}}
+                            <div class="modal fade" id="detailModal-{{ $complaint->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h5 class="modal-title fw-bold"><i class="bi bi-eye me-2"></i>Detail Pengaduan {{ $complaint->tracking_code }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body py-4">
+                                            <div class="row g-3 mb-3">
+                                                <div class="col-md-6">
+                                                    <div class="small fw-bold text-muted mb-1">Pengirim</div>
+                                                    <div>{{ $complaint->parentUser->name ?? '-' }}</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="small fw-bold text-muted mb-1">Siswa</div>
+                                                    <div>{{ $complaint->student->name ?? '-' }}</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="small fw-bold text-muted mb-1">Kategori</div>
+                                                    <div>{{ $complaint->category->name ?? '-' }}</div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="small fw-bold text-muted mb-1">Tanggal</div>
+                                                    <div>{{ $complaint->created_at->format('d/m/Y H:i') }}</div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <div class="small fw-bold text-muted mb-1">Deskripsi Pengaduan</div>
+                                                <div class="bg-light p-3 rounded-3 text-dark" style="font-size: 0.85rem">{{ $complaint->description }}</div>
+                                            </div>
+                                            @if($complaint->evidence_path)
+                                            <div class="mb-3">
+                                                <div class="small fw-bold text-muted mb-1">Bukti Foto</div>
+                                                <div class="text-center">
+                                                    @php
+                                                        $evidencePath = storage_path('app/public/' . $complaint->evidence_path);
+                                                        $base64Image = null;
+                                                        if (file_exists($evidencePath)) {
+                                                            try {
+                                                                $type = mime_content_type($evidencePath);
+                                                                $data = file_get_contents($evidencePath);
+                                                                if ($data) {
+                                                                    $base64Image = 'data:' . $type . ';base64,' . base64_encode($data);
+                                                                }
+                                                            } catch (\Exception $e) {}
+                                                        }
+                                                    @endphp
+
+                                                    @if($base64Image)
+                                                        <img src="{{ $base64Image }}" alt="Bukti Foto" class="img-fluid rounded-3 border" style="max-height: 300px; object-fit: contain;">
+                                                    @else
+                                                        <span class="text-muted small"><i class="bi bi-image"></i> Gambar tidak tersedia/gagal dimuat.</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                            @endif
+                                            @if($complaint->resolution_note)
+                                            <div class="mb-3">
+                                                <div class="small fw-bold text-muted mb-1">Catatan Penyelesaian</div>
+                                                <div class="bg-success bg-opacity-10 p-3 rounded-3 text-dark border-start border-4 border-success" style="font-size: 0.85rem">{{ $complaint->resolution_note }}</div>
+                                            </div>
+                                            @endif
+                                            @if($complaint->rejection_reason)
+                                            <div class="mb-3">
+                                                <div class="small fw-bold text-muted mb-1">Alasan Penolakan</div>
+                                                <div class="bg-danger bg-opacity-10 p-3 rounded-3 text-dark border-start border-4 border-danger" style="font-size: 0.85rem">{{ $complaint->rejection_reason }}</div>
+                                            </div>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Tutup</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{-- Modal: Kirim WA --}}
+                            @if($complaint->status === 'resolved')
+                            <div class="modal fade" id="waModal-{{ $complaint->id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <form action="{{ route('admin.complaints.resendWa', $complaint->id) }}" method="POST">
+                                        @csrf
+                                        <div class="modal-content">
+                                            <div class="modal-header border-0 pb-0">
+                                                <h5 class="modal-title fw-bold text-success"><i class="bi bi-whatsapp me-2"></i>Kirim Notifikasi WhatsApp?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body py-4">
+                                                <div class="mb-3">
+                                                    <div class="small fw-bold text-muted mb-1">Penerima:</div>
+                                                    <div>Bapak/Ibu {{ $complaint->parentUser->name ?? '-' }}</div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="small fw-bold text-muted mb-1">Nomor:</div>
+                                                    <div class="fw-bold">{{ $complaint->parentUser->phone ?? '-' }}</div>
+                                                </div>
+                                                <div class="mb-2">
+                                                    <div class="small fw-bold text-muted mb-1">Pesan:</div>
+                                                    <div class="p-3 bg-light rounded text-dark" style="font-size: 0.85rem; white-space: pre-wrap;">Halo Bapak/Ibu,
+Pengaduan Anda untuk siswa *{{ $complaint->student->name ?? '-' }}* dengan nomor tiket *{{ $complaint->tracking_code }}* telah *SELESAI* kami proses dan tindak lanjuti.
+
+Catatan Penyelesaian:
+{{ $complaint->resolution_note ?? '-' }}
+
+Terima kasih atas laporan Anda. Silakan cek aplikasi untuk detail selengkapnya.</div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0">
+                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-send-fill me-1"></i>Kirim WhatsApp</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            @endif
 
                             {{-- Modal: Terima --}}
                             @if($complaint->status === 'pending')
@@ -143,11 +272,31 @@
                                             </div>
                                             <div class="modal-body py-4">
                                                 <div class="alert alert-success bg-success bg-opacity-10 border-0 small">
-                                                    Pengaduan <strong>{{ $complaint->tracking_code }}</strong> akan diterima dan <strong>nilai AHP akan dihitung secara otomatis</strong> oleh sistem.
+                                                    Pengaduan <strong>{{ $complaint->tracking_code }}</strong> akan diverifikasi. 
+                                                    Silakan beri nilai pada kondisi pengaduan berdasarkan kriteria AHP berikut untuk penentuan prioritas secara otomatis.
                                                 </div>
-                                                <div class="text-muted small">
+                                                
+                                                <div class="mb-4">
+                                                    <h6 class="fw-bold mb-3">Penilaian Kriteria AHP (Skala 1 - 5)</h6>
+                                                    @foreach($criteria as $criterion)
+                                                        <div class="mb-3">
+                                                            <label class="form-label fw-semibold small mb-1">{{ $criterion->name }} ({{ $criterion->code }}) <span class="text-danger">*</span></label>
+                                                            <div class="small text-muted mb-2" style="font-size: 0.7rem;">{{ $criterion->description }}</div>
+                                                            <select name="criteria[{{ $criterion->id }}]" class="form-select form-select-sm" required>
+                                                                <option value="">-- Pilih Nilai --</option>
+                                                                <option value="1">1 - Sangat Rendah / Tidak Mendesak</option>
+                                                                <option value="2">2 - Rendah / Kurang Mendesak</option>
+                                                                <option value="3">3 - Sedang / Cukup Mendesak</option>
+                                                                <option value="4">4 - Tinggi / Mendesak</option>
+                                                                <option value="5">5 - Sangat Tinggi / Darurat</option>
+                                                            </select>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+
+                                                <div class="text-muted small border-top pt-3">
                                                     <i class="bi bi-info-circle me-1"></i>
-                                                    Sistem akan menentukan prioritas berdasarkan urgensi, dampak, dan waktu pengaduan secara otomatis.
+                                                    Sistem akan mengalikan nilai yang Anda berikan dengan bobot kriteria AHP untuk menentukan prioritas akhir.
                                                 </div>
                                             </div>
                                             <div class="modal-footer border-0">

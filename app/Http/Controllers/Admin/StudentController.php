@@ -48,7 +48,7 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nis' => 'required|string|unique:students,nis',
+            'nis' => 'required|string|max:5|regex:/^[0-9]{1,5}$/|unique:students,nis',
             'name' => 'required|string|max:255',
             'gender' => 'required|in:L,P',
             'birth_place' => 'nullable|string|max:255',
@@ -133,7 +133,7 @@ class StudentController extends Controller
     public function update(Request $request, Student $student)
     {
         $request->validate([
-            'nis' => ['required', 'string', Rule::unique('students', 'nis')->ignore($student->id)],
+            'nis' => ['required', 'string', 'max:5', 'regex:/^[0-9]{1,5}$/', Rule::unique('students', 'nis')->ignore($student->id)],
             'name' => 'required|string|max:255',
             'gender' => 'required|in:L,P',
             'birth_place' => 'nullable|string|max:255',

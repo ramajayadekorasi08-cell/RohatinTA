@@ -22,6 +22,16 @@
         <span>Semua Pengaduan</span>
     </a>
 
+        <div class="nav-label">Pengaturan AHP</div>
+    <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
+        <i class="bi bi-diagram-3"></i>
+        <span>Hasil AHP & Bobot</span>
+    </a>
+    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+        <i class="bi bi-table"></i>
+        <span>Perbandingan Kriteria</span>
+    </a>
+    
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.students.index') }}" class="nav-link active">
         <i class="bi bi-mortarboard"></i>
@@ -84,7 +94,7 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>NIS/NISN</th>
+                            <th>NIS</th>
                             <th>Nama Siswa</th>
                             <th>L/P</th>
                             <th>Kelas</th>
@@ -135,7 +145,7 @@
                                         <div class="modal-body py-4">
                                             <div class="row g-3">
                                                 <div class="col-12"><h6 class="border-bottom pb-2 text-primary">Data Siswa</h6></div>
-                                                <div class="col-md-4 text-muted small fw-semibold">NIS/NISN</div>
+                                                <div class="col-md-4 text-muted small fw-semibold">NIS</div>
                                                 <div class="col-md-8">{{ $student->nis }}</div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Nama Siswa</div>
                                                 <div class="col-md-8">{{ $student->name }}</div>
@@ -167,7 +177,7 @@
                                                             <div>
                                                                 <strong>{{ $sibling->name }}</strong> - Kelas {{ $sibling->class }}
                                                             </div>
-                                                            <span class="badge bg-primary rounded-pill">NISN: {{ $sibling->nis }}</span>
+                                                            <span class="badge bg-primary rounded-pill">NIS: {{ $sibling->nis }}</span>
                                                         </li>
                                                         @endforeach
                                                     </ul>
@@ -198,8 +208,8 @@
                                                 <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-person me-2"></i>Identitas Siswa</h6>
                                                 <div class="row g-3 mb-4">
                                                     <div class="col-md-6">
-                                                        <label class="form-label fw-semibold small">NIS/NISN <span class="text-danger">*</span></label>
-                                                        <input type="text" name="nis" class="form-control" value="{{ $student->nis }}" required>
+                                                        <label class="form-label fw-semibold small">NIS <span class="text-danger">*</span></label>
+                                                        <input type="text" name="nis" class="form-control" value="{{ $student->nis }}" required maxlength="5" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label fw-semibold small">Nama Lengkap <span class="text-danger">*</span></label>
@@ -320,8 +330,8 @@
                         <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-person me-2"></i>Identitas Siswa</h6>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small">NIS/NISN <span class="text-danger">*</span></label>
-                                <input type="text" name="nis" class="form-control" value="{{ old('nis') }}" required>
+                                <label class="form-label fw-semibold small">NIS <span class="text-danger">*</span></label>
+                                <input type="text" name="nis" class="form-control" value="{{ old('nis') }}" required maxlength="5" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);">
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small">Nama Lengkap <span class="text-danger">*</span></label>

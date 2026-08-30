@@ -56,7 +56,7 @@
                                     </div>
                                     <div>
                                         <div class="fw-bold">{{ $activeStudent->name }}</div>
-                                        <div class="small text-muted">NISN: {{ $activeStudent->nis }} — Kelas {{ $activeStudent->class }}</div>
+                                        <div class="small text-muted">NIS: {{ $activeStudent->nis }} — Kelas {{ $activeStudent->class }}</div>
                                     </div>
                                 </div>
                             </div>
