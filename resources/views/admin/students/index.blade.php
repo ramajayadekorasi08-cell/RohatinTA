@@ -245,10 +245,6 @@
                                                         <label class="form-label fw-semibold small">Nomor WhatsApp <span class="text-danger">*</span></label>
                                                         <input type="text" name="parent_phone" class="form-control" placeholder="Awalan 62 atau 08..." value="{{ $student->parent->phone ?? '' }}" required>
                                                     </div>
-                                                    <div class="col-md-12">
-                                                        <label class="form-label fw-semibold small">Email (Opsional)</label>
-                                                        <input type="email" name="parent_email" class="form-control" value="{{ $student->parent->email ?? '' }}">
-                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer border-0 pt-0">
@@ -370,10 +366,6 @@
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small">Nomor WhatsApp <span class="text-danger">*</span></label>
                                 <input type="text" name="parent_phone" class="form-control" placeholder="Awalan 62xxx atau 08xxx" value="{{ old('parent_phone') }}" required>
-                            </div>
-                            <div class="col-md-12">
-                                <label class="form-label fw-semibold small">Email Utama (Opsional)</label>
-                                <input type="email" name="parent_email" class="form-control" placeholder="Akan digunakan jika ada reset password" value="{{ old('parent_email') }}">
                             </div>
                         </div>
                     </div>

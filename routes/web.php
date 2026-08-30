@@ -36,6 +36,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/complaints', [\App\Http\Controllers\Admin\ComplaintController::class, 'index'])->name('complaints.index');
     Route::post('/complaints/{complaint}/verify', [\App\Http\Controllers\Admin\ComplaintController::class, 'verify'])->name('complaints.verify');
     Route::post('/complaints/{complaint}/status', [\App\Http\Controllers\Admin\ComplaintController::class, 'updateStatus'])->name('complaints.updateStatus');
+    Route::post('/complaints/{complaint}/resend-wa', [\App\Http\Controllers\Admin\ComplaintController::class, 'resendWa'])->name('complaints.resendWa');
 
     // Master data
     Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['create', 'show', 'edit']);

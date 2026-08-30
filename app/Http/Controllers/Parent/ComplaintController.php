@@ -90,6 +90,7 @@ class ComplaintController extends Controller
             'parent_id'     => auth()->id(),
             'category_id'   => $request->category_id,
             'student_id'    => $activeStudent->id,
+            'title'         => \Illuminate\Support\Str::words($request->description, 5, '...'),
             'description'   => $request->description,
             'evidence_path' => $evidencePath,
             'tracking_code' => Complaint::generateTrackingCode(),

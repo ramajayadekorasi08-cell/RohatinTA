@@ -113,6 +113,16 @@
                                         <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#statusModal-{{ $complaint->id }}" title="Tandai Selesai">
                                             <i class="bi bi-check2-all"></i> Selesai
                                         </button>
+                                    @elseif($complaint->status === 'resolved')
+                                        <span class="badge bg-success bg-opacity-10 text-success mb-1 d-inline-block">Selesai</span>
+                                        <form action="{{ route('admin.complaints.resendWa', $complaint->id) }}" method="POST" class="d-inline-block ms-1">
+                                            @csrf
+                                            <button type="submit" class="btn btn-sm btn-success" title="Kirim Notifikasi WA">
+                                                <i class="bi bi-whatsapp"></i> Notif WA
+                                            </button>
+                                        </form>
+                                    @elseif($complaint->status === 'rejected')
+                                        <span class="badge bg-danger bg-opacity-10 text-danger">Ditolak</span>
                                     @else
                                         <span class="badge bg-secondary bg-opacity-10 text-secondary">Selesai / Ditolak</span>
                                     @endif

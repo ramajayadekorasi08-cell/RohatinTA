@@ -124,11 +124,52 @@ class ComplaintController extends Controller
         // WA Notification
         $parent = $complaint->parentUser;
         if ($parent?->phone) {
-            $waLabel = $complaint->fresh()->statusLabel;
+            $waService = new WhatsappService();
             $studentName = $complaint->student?->name;
-            (new WhatsappService())->notifyStatusChanged($parent->phone, $complaint->tracking_code, $waLabel, $parent->id, $complaint->id, $studentName);
+            
+            if ($request->status === Complaint::STATUS_RESOLVED) {
+                $resolutionNote = $request->resolution_note ?? '-';
+                $waService->notifyComplaintResolved($parent->phone, $complaint->tracking_code, $resolutionNote, $parent->id, $complaint->id, $studentName);
+            } else {
+                $waLabel = $complaint->fresh()->statusLabel;
+                $waService->notifyStatusChanged($parent->phone, $complaint->tracking_code, $waLabel, $parent->id, $complaint->id, $studentName);
+            }
         }
 
         return back()->with('success', "Status pengaduan berhasil diubah ke: {$complaint->fresh()->statusLabel}");
+    }
+
+    /**
+     * Resend WA Notification manually for resolved complaints.
+     */
+    public function resendWa(Complaint $complaint)
+    {
+        if ($complaint->status !== Complaint::STATUS_RESOLVED) {
+            return back()->with('error', 'Notifikasi WhatsApp hanya dapat dikirim ulang untuk pengaduan yang sudah selesai.');
+        }
+
+        $parent = $complaint->parentUser;
+        if (!$parent || !$parent->phone) {
+            return back()->with('error', 'Nomor telepon orang tua tidak ditemukan.');
+        }
+
+        $waService = new WhatsappService();
+        $studentName = $complaint->student?->name;
+        $resolutionNote = $complaint->resolution_note ?? '-';
+        
+        $success = $waService->notifyComplaintResolved(
+            $parent->phone, 
+            $complaint->tracking_code, 
+            $resolutionNote, 
+            $parent->id, 
+            $complaint->id, 
+            $studentName
+        );
+
+        if ($success) {
+            return back()->with('success', "Notifikasi WhatsApp berhasil dikirim ulang ke orang tua.");
+        }
+
+        return back()->with('error', "Gagal mengirim notifikasi WhatsApp. Pastikan layanan GOWA berjalan dan nomor HP valid.");
     }
 }

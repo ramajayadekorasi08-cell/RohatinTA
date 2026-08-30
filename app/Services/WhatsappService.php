@@ -41,30 +41,30 @@ class WhatsappService
         try {
             $formattedPhone = $this->formatPhoneNumber($phone);
             
-            // Format for go-whatsapp-web-multidevice is typically phonenumber@s.whatsapp.net
-            // But this depends on the exact endpoint and payload. 
-            // Most WA API wrappers take the number and suffix it if not provided.
+            // GOWA (go-whatsapp-web-multidevice) menggunakan format JID: nomor@s.whatsapp.net
+            $phoneJid = $formattedPhone . '@s.whatsapp.net';
             
-            // Basic Auth with username and password
+            $url = rtrim($this->baseUrl, '/') . '/send/message?device_id=' . $this->deviceId;
             $response = Http::withBasicAuth($this->username, $this->password)
+                ->asJson()
                 ->timeout($this->timeout)
-                ->post($this->baseUrl . '/messages/sendText', [
-                    'device' => $this->deviceId,
-                    'phone' => $formattedPhone,
+                ->post($url, [
+                    'phone' => $phoneJid,
                     'message' => $message,
                 ]);
 
             if ($response->successful()) {
                 Log::info('WhatsApp message sent successfully', [
-                    'phone' => $formattedPhone,
+                    'phone' => $phoneJid,
                 ]);
                 return true;
             }
 
             Log::error('WhatsApp message failed', [
-                'phone' => $formattedPhone,
+                'phone' => $phoneJid,
+                'url' => $url,
                 'status' => $response->status(),
-                'response' => $response->json(),
+                'response_body' => $response->body(),
             ]);
 
             return false;
@@ -105,6 +105,16 @@ class WhatsappService
     {
         $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
         $message = "Halo Bapak/Ibu,\n\nStatus pengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah diperbarui menjadi:\n\n*{$statusLabel}*\n\nSilakan cek aplikasi untuk detail selengkapnya.";
+        return $this->send($phone, $message);
+    }
+
+    /**
+     * Send notification for resolved complaint
+     */
+    public function notifyComplaintResolved(string $phone, string $trackingCode, string $resolutionNote, ?int $parentId = null, ?int $complaintId = null, ?string $studentName = null): bool
+    {
+        $siswaInfo = $studentName ? " untuk siswa *{$studentName}*" : "";
+        $message = "Halo Bapak/Ibu,\n\nPengaduan Anda{$siswaInfo} dengan nomor tiket *{$trackingCode}* telah *SELESAI* kami proses dan tindak lanjuti.\n\nCatatan Penyelesaian:\n{$resolutionNote}\n\nTerima kasih atas laporan Anda. Silakan cek aplikasi untuk detail selengkapnya.";
         return $this->send($phone, $message);
     }
 
