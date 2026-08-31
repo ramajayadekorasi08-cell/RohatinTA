@@ -55,7 +55,7 @@ class ComplaintController extends Controller
                 \App\Models\AhpResult::updateOrCreate(
                     [
                         'complaint_id' => $complaint->id,
-                        'ahp_criterion_id' => $criterionId,
+                        'criteria_id' => $criterionId,
                     ],
                     [
                         'score' => $score,

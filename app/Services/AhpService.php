@@ -33,7 +33,7 @@ class AhpService
             // Score dihitung dari input manual form yang disimpan Admin ke tabel ahp_results
             foreach ($criteria as $criterion) {
                 // Get result for this criterion (saved during verification)
-                $result = $complaint->ahpResults()->where('ahp_criterion_id', $criterion->id)->first();
+                $result = $complaint->ahpResults()->where('criteria_id', $criterion->id)->first();
                 $score = $result ? $result->score : 1; 
 
                 // Normalisasi benefit (nilai / maks)

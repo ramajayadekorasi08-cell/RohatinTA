@@ -15,23 +15,24 @@
         <i class="bi bi-grid-fill"></i>
         <span>Dashboard</span>
     </a>
-    
+
     <div class="nav-label">Manajemen</div>
     <a href="{{ route('admin.complaints.index') }}" class="nav-link">
         <i class="bi bi-inbox"></i>
         <span>Semua Pengaduan</span>
     </a>
 
-        <div class="nav-label">Pengaturan AHP</div>
+    <div class="nav-label">Pengaturan AHP</div>
     <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
         <i class="bi bi-diagram-3"></i>
-        <span>Hasil AHP & Bobot</span>
+        <span>Hasil Pengaduan & Bobot</span>
     </a>
-    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+    <a href="{{ route('admin.ahp.comparison') }}"
+        class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
         <i class="bi bi-table"></i>
         <span>Perbandingan Kriteria</span>
     </a>
-    
+
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.students.index') }}" class="nav-link active">
         <i class="bi bi-mortarboard"></i>
@@ -61,11 +62,13 @@
                         @endforeach
                     </select>
                     <div class="input-group input-group-sm" style="width: 200px;">
-                        <input type="text" name="search" class="form-control" placeholder="Cari NIS/Siswa..." value="{{ request('search') }}">
+                        <input type="text" name="search" class="form-control" placeholder="Cari NIS/Siswa..."
+                            value="{{ request('search') }}">
                         <button type="submit" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
                     </div>
                     @if(request()->has('search') || request()->has('class_filter'))
-                        <a href="{{ route('admin.students.index') }}" class="btn btn-sm btn-light" title="Reset filter"><i class="bi bi-x-lg"></i></a>
+                        <a href="{{ route('admin.students.index') }}" class="btn btn-sm btn-light" title="Reset filter"><i
+                                class="bi bi-x-lg"></i></a>
                     @endif
                 </form>
                 <button class="btn btn-primary-custom btn-sm ms-md-2" data-bs-toggle="modal" data-bs-target="#createModal">
@@ -111,54 +114,70 @@
                                 <td><span style="font-weight: 600; color: var(--primary);">{{ $student->nis }}</span></td>
                                 <td>{{ $student->name }}</td>
                                 <td>{{ $student->gender ?? '-' }}</td>
-                                <td><span class="badge bg-secondary bg-opacity-10 text-secondary">{{ $student->class }}</span></td>
+                                <td><span class="badge bg-secondary bg-opacity-10 text-secondary">{{ $student->class }}</span>
+                                </td>
                                 <td>{{ $student->parent->name ?? '-' }}</td>
                                 <td>{{ $student->parent->phone ?? '-' }}</td>
                                 <td>
                                     @if($student->parent)
-                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2"><i class="bi bi-check-circle me-1"></i>Tersedia</span>
+                                        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2"><i
+                                                class="bi bi-check-circle me-1"></i>Tersedia</span>
                                     @else
                                         <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-2">Tidak Ada</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-sm btn-outline-info me-1" data-bs-toggle="modal" data-bs-target="#detailModal-{{ $student->id }}" title="Detail Lengkap">
+                                    <button class="btn btn-sm btn-outline-info me-1" data-bs-toggle="modal"
+                                        data-bs-target="#detailModal-{{ $student->id }}" title="Detail Lengkap">
                                         <i class="bi bi-eye"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#editModal-{{ $student->id }}">
+                                    <button class="btn btn-sm btn-outline-primary me-1" data-bs-toggle="modal"
+                                        data-bs-target="#editModal-{{ $student->id }}">
                                         <i class="bi bi-pencil"></i>
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ $student->id }}">
+                                    <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal-{{ $student->id }}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </td>
                             </tr>
-                            
+
                             <!-- Detail Modal -->
                             <div class="modal fade" id="detailModal-{{ $student->id }}" tabindex="-1" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <div class="modal-header border-0 pb-0">
-                                            <h5 class="modal-title fw-bold"><i class="bi bi-person-lines-fill me-2"></i>Detail Siswa & Orang Tua</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h5 class="modal-title fw-bold"><i class="bi bi-person-lines-fill me-2"></i>Detail
+                                                Siswa & Orang Tua</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body py-4">
                                             <div class="row g-3">
-                                                <div class="col-12"><h6 class="border-bottom pb-2 text-primary">Data Siswa</h6></div>
+                                                <div class="col-12">
+                                                    <h6 class="border-bottom pb-2 text-primary">Data Siswa</h6>
+                                                </div>
                                                 <div class="col-md-4 text-muted small fw-semibold">NIS</div>
                                                 <div class="col-md-8">{{ $student->nis }}</div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Nama Siswa</div>
                                                 <div class="col-md-8">{{ $student->name }}</div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Jenis Kelamin</div>
-                                                <div class="col-md-8">{{ $student->gender == 'L' ? 'Laki-Laki' : ($student->gender == 'P' ? 'Perempuan' : '-') }}</div>
+                                                <div class="col-md-8">
+                                                    {{ $student->gender == 'L' ? 'Laki-Laki' : ($student->gender == 'P' ? 'Perempuan' : '-') }}
+                                                </div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Tempat/Tgl Lahir</div>
-                                                <div class="col-md-8">{{ $student->birth_place ?? '-' }}, {{ $student->birth_date ? \Carbon\Carbon::parse($student->birth_date)->format('d-m-Y') : '-' }}</div>
+                                                <div class="col-md-8">{{ $student->birth_place ?? '-' }},
+                                                    {{ $student->birth_date ? \Carbon\Carbon::parse($student->birth_date)->format('d-m-Y') : '-' }}
+                                                </div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Kelas</div>
-                                                <div class="col-md-8"><span class="badge bg-secondary">{{ $student->class }}</span></div>
+                                                <div class="col-md-8"><span
+                                                        class="badge bg-secondary">{{ $student->class }}</span></div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Alamat</div>
                                                 <div class="col-md-8">{{ $student->address ?? '-' }}</div>
 
-                                                <div class="col-12 mt-4"><h6 class="border-bottom pb-2 text-primary">Data Orang Tua / Akun</h6></div>
+                                                <div class="col-12 mt-4">
+                                                    <h6 class="border-bottom pb-2 text-primary">Data Orang Tua / Akun</h6>
+                                                </div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Nama Orang Tua</div>
                                                 <div class="col-md-8">{{ $student->parent->name ?? '-' }}</div>
                                                 <div class="col-md-4 text-muted small fw-semibold">No. WhatsApp</div>
@@ -166,22 +185,28 @@
                                                 <div class="col-md-4 text-muted small fw-semibold">Email</div>
                                                 <div class="col-md-8">{{ $student->parent->email ?? '-' }}</div>
                                                 <div class="col-md-4 text-muted small fw-semibold">Username Login</div>
-                                                <div class="col-md-8 fw-bold text-success">{{ $student->parent->username ?? '-' }}</div>
-                                                
+                                                <div class="col-md-8 fw-bold text-success">
+                                                    {{ $student->parent->username ?? '-' }}</div>
+
                                                 @if($student->parent && $student->parent->students->count() > 1)
-                                                <div class="col-12 mt-4"><h6 class="border-bottom pb-2 text-primary">Daftar Anak Wali Murid Ini</h6></div>
-                                                <div class="col-12">
-                                                    <ul class="list-group">
-                                                        @foreach($student->parent->students as $sibling)
-                                                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                            <div>
-                                                                <strong>{{ $sibling->name }}</strong> - Kelas {{ $sibling->class }}
-                                                            </div>
-                                                            <span class="badge bg-primary rounded-pill">NIS: {{ $sibling->nis }}</span>
-                                                        </li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
+                                                    <div class="col-12 mt-4">
+                                                        <h6 class="border-bottom pb-2 text-primary">Daftar Anak Wali Murid Ini</h6>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <ul class="list-group">
+                                                            @foreach($student->parent->students as $sibling)
+                                                                <li
+                                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                                    <div>
+                                                                        <strong>{{ $sibling->name }}</strong> - Kelas
+                                                                        {{ $sibling->class }}
+                                                                    </div>
+                                                                    <span class="badge bg-primary rounded-pill">NIS:
+                                                                        {{ $sibling->nis }}</span>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
                                                 @endif
                                             </div>
                                         </div>
@@ -200,66 +225,93 @@
                                         @method('PUT')
                                         <div class="modal-content">
                                             <div class="modal-header border-0 pb-0">
-                                                <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Data Siswa</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <h5 class="modal-title fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit
+                                                    Data Siswa</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body py-4 text-start">
-                                                
-                                                <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-person me-2"></i>Identitas Siswa</h6>
+
+                                                <h6 class="mb-3 text-primary border-bottom pb-2"><i
+                                                        class="bi bi-person me-2"></i>Identitas Siswa</h6>
                                                 <div class="row g-3 mb-4">
                                                     <div class="col-md-6">
-                                                        <label class="form-label fw-semibold small">NIS <span class="text-danger">*</span></label>
-                                                        <input type="text" name="nis" class="form-control" value="{{ $student->nis }}" required maxlength="5" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);">
+                                                        <label class="form-label fw-semibold small">NIS <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="text" name="nis" class="form-control"
+                                                            value="{{ $student->nis }}" required maxlength="5" pattern="[0-9]*"
+                                                            inputmode="numeric"
+                                                            oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);">
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label class="form-label fw-semibold small">Nama Lengkap <span class="text-danger">*</span></label>
-                                                        <input type="text" name="name" class="form-control" value="{{ $student->name }}" required>
+                                                        <label class="form-label fw-semibold small">Nama Lengkap <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="text" name="name" class="form-control"
+                                                            value="{{ $student->name }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label class="form-label fw-semibold small">Jenis Kelamin <span class="text-danger">*</span></label>
+                                                        <label class="form-label fw-semibold small">Jenis Kelamin <span
+                                                                class="text-danger">*</span></label>
                                                         <select name="gender" class="form-select" required>
                                                             <option value="" disabled>Pilih...</option>
-                                                            <option value="L" {{ $student->gender == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                                                            <option value="P" {{ $student->gender == 'P' ? 'selected' : '' }}>Perempuan</option>
+                                                            <option value="L" {{ $student->gender == 'L' ? 'selected' : '' }}>
+                                                                Laki-laki</option>
+                                                            <option value="P" {{ $student->gender == 'P' ? 'selected' : '' }}>
+                                                                Perempuan</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label class="form-label fw-semibold small">Kelas <span class="text-danger">*</span></label>
-                                                        <input type="text" name="class" class="form-control" value="{{ $student->class }}" required>
+                                                        <label class="form-label fw-semibold small">Kelas <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="text" name="class" class="form-control"
+                                                            value="{{ $student->class }}" required>
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <label class="form-label fw-semibold small">Tahun Masuk <span class="text-danger">*</span></label>
-                                                        <input type="number" name="tahun_masuk" class="form-control" value="{{ $student->tahun_masuk }}" required min="2000">
+                                                        <label class="form-label fw-semibold small">Tahun Masuk <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="number" name="tahun_masuk" class="form-control"
+                                                            value="{{ $student->tahun_masuk }}" required min="2000">
                                                     </div>
                                                     <div class="col-md-4">
                                                         <label class="form-label fw-semibold small">Tempat Lahir</label>
-                                                        <input type="text" name="birth_place" class="form-control" value="{{ $student->birth_place }}">
+                                                        <input type="text" name="birth_place" class="form-control"
+                                                            value="{{ $student->birth_place }}">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label fw-semibold small">Tanggal Lahir</label>
-                                                        <input type="date" name="birth_date" class="form-control" value="{{ $student->birth_date }}">
+                                                        <input type="date" name="birth_date" class="form-control"
+                                                            value="{{ $student->birth_date }}">
                                                     </div>
                                                     <div class="col-md-6">
                                                         <label class="form-label fw-semibold small">Alamat</label>
-                                                        <input type="text" name="address" class="form-control" value="{{ $student->address }}">
+                                                        <input type="text" name="address" class="form-control"
+                                                            value="{{ $student->address }}">
                                                     </div>
                                                 </div>
 
-                                                <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-people me-2"></i>Data Orang Tua (Akun)</h6>
+                                                <h6 class="mb-3 text-primary border-bottom pb-2"><i
+                                                        class="bi bi-people me-2"></i>Data Orang Tua (Akun)</h6>
                                                 <div class="row g-3">
                                                     <div class="col-md-6">
-                                                        <label class="form-label fw-semibold small">Nama Orang Tua/Wali <span class="text-danger">*</span></label>
-                                                        <input type="text" name="parent_name" class="form-control" value="{{ $student->parent->name ?? '' }}" required>
+                                                        <label class="form-label fw-semibold small">Nama Orang Tua/Wali <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="text" name="parent_name" class="form-control"
+                                                            value="{{ $student->parent->name ?? '' }}" required>
                                                     </div>
                                                     <div class="col-md-6">
-                                                        <label class="form-label fw-semibold small">Nomor WhatsApp <span class="text-danger">*</span></label>
-                                                        <input type="text" name="parent_phone" class="form-control" placeholder="Awalan 62 atau 08..." value="{{ $student->parent->phone ?? '' }}" required>
+                                                        <label class="form-label fw-semibold small">Nomor WhatsApp <span
+                                                                class="text-danger">*</span></label>
+                                                        <input type="text" name="parent_phone" class="form-control"
+                                                            placeholder="Awalan 62 atau 08..."
+                                                            value="{{ $student->parent->phone ?? '' }}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="modal-footer border-0 pt-0">
-                                                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-primary-custom px-4">Simpan Perubahan</button>
+                                                <button type="button" class="btn btn-light"
+                                                    data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-primary-custom px-4">Simpan
+                                                    Perubahan</button>
                                             </div>
                                         </div>
                                     </form>
@@ -274,15 +326,20 @@
                                         @method('DELETE')
                                         <div class="modal-content">
                                             <div class="modal-header border-0 pb-0">
-                                                <h6 class="modal-title fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Hapus Siswa?</h6>
+                                                <h6 class="modal-title fw-bold text-danger"><i
+                                                        class="bi bi-exclamation-triangle-fill me-2"></i>Hapus Siswa?</h6>
                                             </div>
                                             <div class="modal-body text-start">
-                                                Apakah Anda yakin ingin menghapus siswa <strong>{{ $student->name }}</strong>?<br><br>
-                                                <span class="text-danger small fw-bold">Perhatian: Akun Orang Tua hanya akan terhapus jika tidak memiliki anak lain lagi.</span>
+                                                Apakah Anda yakin ingin menghapus siswa
+                                                <strong>{{ $student->name }}</strong>?<br><br>
+                                                <span class="text-danger small fw-bold">Perhatian: Akun Orang Tua hanya akan
+                                                    terhapus jika tidak memiliki anak lain lagi.</span>
                                             </div>
                                             <div class="modal-footer border-0 pt-0">
-                                                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Batal</button>
-                                                <button type="submit" class="btn btn-sm btn-danger px-3">Hapus Selamanya</button>
+                                                <button type="button" class="btn btn-sm btn-light"
+                                                    data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-sm btn-danger px-3">Hapus
+                                                    Selamanya</button>
                                             </div>
                                         </div>
                                     </form>
@@ -299,7 +356,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             @if($students->hasPages())
                 <div class="px-4 py-3 border-top">
                     {{ $students->links() }}
@@ -315,30 +372,38 @@
                 @csrf
                 <div class="modal-content">
                     <div class="modal-header border-0 pb-0">
-                        <h5 class="modal-title fw-bold"><i class="bi bi-person-plus-fill me-2"></i>Tambah Data Siswa Baru</h5>
+                        <h5 class="modal-title fw-bold"><i class="bi bi-person-plus-fill me-2"></i>Tambah Data Siswa Baru
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body py-4 text-start">
-                        
+
                         <div class="alert alert-info bg-info bg-opacity-10 border-0 small mb-4">
                             <i class="bi bi-info-circle-fill me-2"></i>
-                            <strong>Pembuatan Akun Otomatis:</strong> Ketika data ini disimpan, sistem akan mencari akun Orang Tua berdasarkan <strong>Nomor WhatsApp</strong>.
-                            Jika belum terdaftar, akun baru akan dibuat otomatis (Username: <strong>nama ortu tanpa spasi</strong>, Password: <strong>sipadu + tahun masuk</strong>).
+                            <strong>Pembuatan Akun Otomatis:</strong> Ketika data ini disimpan, sistem akan mencari akun
+                            Orang Tua berdasarkan <strong>Nomor WhatsApp</strong>.
+                            Jika belum terdaftar, akun baru akan dibuat otomatis (Username: <strong>nama ortu tanpa
+                                spasi</strong>, Password: <strong>sipadu + tahun masuk</strong>).
                             Jika sudah terdaftar, siswa akan langsung dihubungkan ke akun yang ada.
                         </div>
 
-                        <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-person me-2"></i>Identitas Siswa</h6>
+                        <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-person me-2"></i>Identitas Siswa
+                        </h6>
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label class="form-label fw-semibold small">NIS <span class="text-danger">*</span></label>
-                                <input type="text" name="nis" class="form-control" value="{{ old('nis') }}" required maxlength="5" pattern="[0-9]*" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);">
+                                <input type="text" name="nis" class="form-control" value="{{ old('nis') }}" required
+                                    maxlength="5" pattern="[0-9]*" inputmode="numeric"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);">
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small">Nama Lengkap <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold small">Nama Lengkap <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small">Jenis Kelamin <span class="text-danger">*</span></label>
+                                <label class="form-label fw-semibold small">Jenis Kelamin <span
+                                        class="text-danger">*</span></label>
                                 <select name="gender" class="form-select" required>
                                     <option value="" disabled {{ old('gender') ? '' : 'selected' }}>Pilih...</option>
                                     <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
@@ -347,11 +412,14 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold small">Kelas <span class="text-danger">*</span></label>
-                                <input type="text" name="class" class="form-control" placeholder="Contoh: VII A" value="{{ old('class') }}" required>
+                                <input type="text" name="class" class="form-control" placeholder="Contoh: VII A"
+                                    value="{{ old('class') }}" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label fw-semibold small">Tahun Masuk <span class="text-danger">*</span></label>
-                                <input type="number" name="tahun_masuk" class="form-control" placeholder="Contoh: 2026" value="{{ old('tahun_masuk') ?? date('Y') }}" required min="2000">
+                                <label class="form-label fw-semibold small">Tahun Masuk <span
+                                        class="text-danger">*</span></label>
+                                <input type="number" name="tahun_masuk" class="form-control" placeholder="Contoh: 2026"
+                                    value="{{ old('tahun_masuk') ?? date('Y') }}" required min="2000">
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label fw-semibold small">Tempat Lahir</label>
@@ -367,21 +435,27 @@
                             </div>
                         </div>
 
-                        <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-people me-2"></i>Data Orang Tua (Akun Wali)</h6>
+                        <h6 class="mb-3 text-primary border-bottom pb-2"><i class="bi bi-people me-2"></i>Data Orang Tua
+                            (Akun Wali)</h6>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small">Nama Orang Tua/Wali <span class="text-danger">*</span></label>
-                                <input type="text" name="parent_name" class="form-control" value="{{ old('parent_name') }}" required>
+                                <label class="form-label fw-semibold small">Nama Orang Tua/Wali <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="parent_name" class="form-control" value="{{ old('parent_name') }}"
+                                    required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold small">Nomor WhatsApp <span class="text-danger">*</span></label>
-                                <input type="text" name="parent_phone" class="form-control" placeholder="Awalan 62xxx atau 08xxx" value="{{ old('parent_phone') }}" required>
+                                <label class="form-label fw-semibold small">Nomor WhatsApp <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" name="parent_phone" class="form-control"
+                                    placeholder="Awalan 62xxx atau 08xxx" value="{{ old('parent_phone') }}" required>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer border-0 pt-0">
                         <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary-custom px-4"><i class="bi bi-save me-2"></i>Simpan Siswa & Buat Akun</button>
+                        <button type="submit" class="btn btn-primary-custom px-4"><i class="bi bi-save me-2"></i>Simpan
+                            Siswa & Buat Akun</button>
                     </div>
                 </div>
             </form>

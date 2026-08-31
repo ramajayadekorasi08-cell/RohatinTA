@@ -15,7 +15,7 @@
         <i class="bi bi-grid-fill"></i>
         <span>Dashboard</span>
     </a>
-    
+
     <div class="nav-label">Manajemen</div>
     <a href="{{ route('admin.complaints.index') }}" class="nav-link">
         <i class="bi bi-inbox"></i>
@@ -25,17 +25,18 @@
         @endif
     </a>
 
-    
-        <div class="nav-label">Pengaturan AHP</div>
+
+    <div class="nav-label">Pengaturan AHP</div>
     <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
         <i class="bi bi-diagram-3"></i>
-        <span>Hasil AHP & Bobot</span>
+        <span>Hasil Pengaduan & Bobot</span>
     </a>
-    <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
+    <a href="{{ route('admin.ahp.comparison') }}"
+        class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
         <i class="bi bi-table"></i>
         <span>Perbandingan Kriteria</span>
     </a>
-    
+
     <div class="nav-label">Master Data</div>
     <a href="{{ route('admin.students.index') }}" class="nav-link">
         <i class="bi bi-mortarboard"></i>
@@ -94,14 +95,14 @@
         <div class="col-lg-8">
             <div class="data-card h-100">
                 <div class="card-header-custom">
-                    <h6><i class="bi bi-graph-up me-2"></i>Tren Pengaduan (6 Bulan)</h6>
+                    <h6><i class="bi bi-graph-up me-2"></i>Tren Pengaduan </h6>
                 </div>
                 <div class="card-body-custom">
                     <canvas id="trendChart" height="250"></canvas>
                 </div>
             </div>
         </div>
-        
+
         <div class="col-lg-4">
             <div class="data-card h-100">
                 <div class="card-header-custom">
@@ -137,16 +138,19 @@
                     <tbody>
                         @forelse($recentComplaints as $complaint)
                             <tr>
-                                <td><span style="font-weight: 600; color: var(--primary)">{{ $complaint->tracking_code }}</span></td>
+                                <td><span style="font-weight: 600; color: var(--primary)">{{ $complaint->tracking_code }}</span>
+                                </td>
                                 <td>
                                     <div class="d-flex flex-column">
                                         <span style="font-weight: 500">{{ $complaint->parentUser->name ?? '-' }}</span>
-                                        <span style="color: #64748b; font-size: 0.75rem">Siswa: {{ $complaint->student->name ?? '-' }}</span>
+                                        <span style="color: #64748b; font-size: 0.75rem">Siswa:
+                                            {{ $complaint->student->name ?? '-' }}</span>
                                     </div>
                                 </td>
                                 <td>{{ $complaint->category->name ?? '-' }}</td>
                                 <td>
-                                    <span style="font-weight: 500" class="d-inline-block text-truncate" style="max-width: 200px;" title="{{ $complaint->title }}">
+                                    <span style="font-weight: 500" class="d-inline-block text-truncate"
+                                        style="max-width: 200px;" title="{{ $complaint->title }}">
                                         {{ $complaint->title }}
                                     </span>
                                 </td>
@@ -156,7 +160,8 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="badge-status bg-{{ $complaint->statusBadge }} bg-opacity-10 text-{{ $complaint->statusBadge }}">
+                                    <span
+                                        class="badge-status bg-{{ $complaint->statusBadge }} bg-opacity-10 text-{{ $complaint->statusBadge }}">
                                         {{ $complaint->statusLabel }}
                                     </span>
                                 </td>
@@ -175,78 +180,78 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Status Chart
-        const statusCtx = document.getElementById('statusChart').getContext('2d');
-        new Chart(statusCtx, {
-            type: 'doughnut',
-            data: {
-                labels: {!! json_encode($statusChart['labels']) !!},
-                datasets: [{
-                    data: {!! json_encode($statusChart['data']) !!},
-                    backgroundColor: [
-                        '#f59e0b', // Pending
-                        '#0ea5e9', // Approved
-                        '#3b82f6', // On Progress
-                        '#10b981', // Resolved
-                        '#ef4444'  // Rejected
-                    ],
-                    borderWidth: 0,
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { boxWidth: 10, padding: 15, font: { family: 'Inter', size: 11 } }
-                    }
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Status Chart
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($statusChart['labels']) !!},
+                    datasets: [{
+                        data: {!! json_encode($statusChart['data']) !!},
+                        backgroundColor: [
+                            '#f59e0b', // Pending
+                            '#0ea5e9', // Approved
+                            '#3b82f6', // On Progress
+                            '#10b981', // Resolved
+                            '#ef4444'  // Rejected
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
                 },
-                cutout: '70%'
-            }
-        });
-
-        // Trend Chart
-        const trendCtx = document.getElementById('trendChart').getContext('2d');
-        new Chart(trendCtx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($trendChart['labels']) !!},
-                datasets: [{
-                    label: 'Pengaduan Masuk',
-                    data: {!! json_encode($trendChart['data']) !!},
-                    borderColor: '#1e3a5f',
-                    backgroundColor: 'rgba(30,58,95,0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#1e3a5f',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { stepSize: 1, precision: 0 },
-                        grid: { color: 'rgba(226,232,240,0.5)', drawBorder: false }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { boxWidth: 10, padding: 15, font: { family: 'Inter', size: 11 } }
+                        }
                     },
-                    x: {
-                        grid: { display: false, drawBorder: false }
+                    cutout: '70%'
+                }
+            });
+
+            // Trend Chart
+            const trendCtx = document.getElementById('trendChart').getContext('2d');
+            new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($trendChart['labels']) !!},
+                    datasets: [{
+                        label: 'Pengaduan Masuk',
+                        data: {!! json_encode($trendChart['data']) !!},
+                        borderColor: '#1e3a5f',
+                        backgroundColor: 'rgba(30,58,95,0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#1e3a5f',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { stepSize: 1, precision: 0 },
+                            grid: { color: 'rgba(226,232,240,0.5)', drawBorder: false }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false }
+                        }
                     }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

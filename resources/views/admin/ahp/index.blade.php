@@ -26,7 +26,7 @@
         <div class="nav-label">Pengaturan AHP</div>
     <a href="{{ route('admin.ahp.index') }}" class="nav-link {{ request()->routeIs('admin.ahp.index') ? 'active' : '' }}">
         <i class="bi bi-diagram-3"></i>
-        <span>Hasil AHP & Bobot</span>
+        <span>Hasil Pengaduan & Bobot</span>
     </a>
     <a href="{{ route('admin.ahp.comparison') }}" class="nav-link {{ request()->routeIs('admin.ahp.comparison') ? 'active' : '' }}">
         <i class="bi bi-table"></i>
